@@ -47,3 +47,8 @@ Linux, MacOS:
     `docker build -t flask-smorest-api .`
 3. Run container
     `docker run -dp 5000:5000 flask-smorest-api`
+
+
+Documentation:
+Rest url `http://127.0.0.1:5000/`
+Swagger url `http://127.0.0.1:5000/swagger-ui`
