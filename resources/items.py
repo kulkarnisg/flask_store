@@ -3,6 +3,7 @@ from flask import request
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
 from db import items, stores
+from schemas import ItemSchema, ItemUpdateSchema
 
 
 blp = Blueprint("items", __name__, description= "Operation on items")
@@ -10,37 +11,37 @@ blp = Blueprint("items", __name__, description= "Operation on items")
 
 @blp.route("/item/<string:item_id>")
 class Items(MethodView):
+    @blp.response(200, ItemSchema)
     def get(self, item_id):
         try:
             return items[item_id]
         except KeyError:
             abort(404, message= "Item not found.")
 
-    def delete(self):
-        pass
-
-    def put(self, item_id):
-        item_data = request.get_json()
-        if "price" not in item_data or "name"  not in item_data:
-            abort(400, message = "Bad request. Enter price and name")
+    def delete(self, item_id):
+        try:
+            del items[item_id]
+            return {"message": "Item Deleted"}
+        except KeyError:
+            abort(404, message="Item not found")
+    
+    @blp.arguments(ItemUpdateSchema)
+    @blp.response(201, ItemSchema)
+    def put(self, item_data, item_id):
         try:
             items[item_id] |= item_data
             return {"message": "Items updated"}
         except KeyError:
-            abort(404, message="Item not found")
+            abort(401, message="Item not found")
 
 @blp.route("/item")
 class ItemList(MethodView):
+    @blp.response(200, ItemSchema(many=True))
     def get(self):
-        return {"items": list(items.values())}
+        return items.values()
 
-    def post(self):
-        item_data = request.get_json()
-        if ("name" not in item_data 
-            or "price" not in item_data
-            or "store_id" not in item_data):
-                abort(400,
-                    "Bad request, include all json data")
+    @blp.arguments(ItemSchema)
+    def post(self, item_data):
         if item_data["store_id"] not in stores:
             abort(404, message= "Store not found.")
         for item in items.values():
