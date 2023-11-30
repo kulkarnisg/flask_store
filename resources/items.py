@@ -10,7 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from schemas import ItemSchema, ItemUpdateSchema
 
 
-blp = Blueprint("items", __name__, description= "Operation on items")
+blp = Blueprint("items", __name__, description="Operation on items")
 
 
 @blp.route("/item/<string:item_id>")
@@ -25,7 +25,7 @@ class Items(MethodView):
         db.session.delete(item)
         db.session.commit()
         return {"message": "Item deleted"}
-    
+
     @blp.arguments(ItemUpdateSchema)
     @blp.response(201, ItemSchema)
     def put(self, item_data, item_id):
@@ -38,6 +38,7 @@ class Items(MethodView):
         db.session.add(item)
         db.session.commit()
         return item
+
 
 @blp.route("/item")
 class ItemList(MethodView):
