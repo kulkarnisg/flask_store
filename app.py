@@ -5,7 +5,7 @@ from flask_smorest import Api
 
 from db import db
 import models
-# Same as model.__init__ 
+# Same as model.__init__
 
 from resources.items import blp as ItemBlueprint
 from resources.stores import blp as StoreBlueprint
@@ -29,7 +29,6 @@ def create_app(db_url=None):
 
     with app.app_context():
         db.create_all()
-
 
     api.register_blueprint(ItemBlueprint)
     api.register_blueprint(StoreBlueprint)

@@ -8,7 +8,7 @@ from schemas import StoreSchema
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 
-blp = Blueprint("stores", __name__, description= "Operation on stores")
+blp = Blueprint("stores", __name__, description="Operation on stores")
 
 
 @blp.route("/store/<string:store_id>")
@@ -24,6 +24,7 @@ class Store(MethodView):
         db.session.commit()
         return {"message": "Store deleted"}
 
+
 @blp.route("/store")
 class StoreList(MethodView):
     @blp.response(200, StoreSchema(many=True))
@@ -31,7 +32,7 @@ class StoreList(MethodView):
         return StoreModel.query.all()
 
     @blp.arguments(StoreSchema)
-    @blp.response(201, StoreSchema )
+    @blp.response(201, StoreSchema)
     def post(self, store_data):
         store = StoreModel(**store_data)
         try:
